@@ -138,7 +138,7 @@ class _LoginState extends State<Login> {
                         print('error');
                       }
                       //CREATE AN URL
-                      var url = Uri.http('10.0.2.2:3000','authenticate');
+                      var url = Uri.parse('http://10.0.2.2:3000/authenticate');
                       //THE RESPONSE
                       var response = await http.post(url,body: {'username':username.text,'password':password.text});
                       //IF IT IS SUCESSFULL

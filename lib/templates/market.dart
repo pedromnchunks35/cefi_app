@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:cefi_app/templates/listviewmarket.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-
+import 'package:http/http.dart' as http;
 import 'modules/nft.dart';
 import 'modules/token.dart';
 
@@ -16,18 +18,24 @@ class Market extends StatefulWidget {
 
 class _MarketState extends State<Market> {
 
-  List<Object> test = [
-  Nft(name: 'Pedro', price: '200'),
-  Token(name: 'TST', quantity: '20', price: '2.0',photo: 'chunksup.png'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  Token(name: 'test', quantity: '20', price: '3.0', photo: 'bogdanoff.jpg'),
-  ];
+  //GET THE DATA
+  Future<List<Map<String,dynamic>>> getData()async{
+   
+   //URL
+   var url = Uri.parse("localhost:3000/Market");
+   //HTTP GET
+   var data =await http.get(url);
+  
+  if(data.statusCode==200){
+  var format = jsonDecode(data.body);
+  return format;
+  }else{
+    return [];
+  }
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     //AN CONTAINER
@@ -56,30 +64,48 @@ class _MarketState extends State<Market> {
           ),
         ),
          //NOW THE LIST OF OFFERS
-         Expanded(
-          //THE LISTVIEW BUILDER
-         child: ListView.builder(
-          //DIRECTION OF THE SCROLL
-          scrollDirection: Axis.vertical,
-          //ENABLE SHRINK
-          shrinkWrap: true,
-          //LENGTH OF THE ITEMS
-         itemCount: test.length,
-         //ITEM BUILDER
-         itemBuilder: (BuildContext context, int index) { 
-          //AN CARD / TEMPLATE
-          return Card(
-            //THE COLOR OF THE CARD
-          color: Color.fromARGB(255, 175, 174, 185),
-          //THE SHAPE OF THE CARD BORDER
-          shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          ),
-          //WHAT IS INSIDE OF THE CARD ACCOURDING TO THE OBJECT TYPE INSIDE THE LIST UPWARD
-          child: ListViewMarket(asset: test[index]),
-          );
-          }),
-       )
+         FutureBuilder(
+           builder:
+           ((context, snapshot) {
+
+           if(snapshot.connectionState==ConnectionState.done){
+            var data = snapshot.data as List<Map<String,dynamic>>;
+            return Expanded(
+            //THE LISTVIEW BUILDER
+           child: ListView(
+            //DIRECTION OF THE SCROLL
+            scrollDirection: Axis.vertical,
+            //ENABLE SHRINK
+            shrinkWrap: true,
+            //CHILDREN
+            children: 
+            data.map((item){
+            
+            //AN CARD / TEMPLATE
+            return Card(
+              //THE COLOR OF THE CARD
+            color: Color.fromARGB(255, 175, 174, 185),
+            //THE SHAPE OF THE CARD BORDER
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            ),
+            //WHAT IS INSIDE OF THE CARD ACCOURDING TO THE OBJECT TYPE INSIDE THE LIST UPWARD
+            child: ListViewMarket(asset: item),
+            );
+            }).toList()
+           
+            ),
+                );
+           }else{
+
+            return CircularProgressIndicator();
+
+           }
+            
+
+           })
+           
+         )
 
       ],),
     );

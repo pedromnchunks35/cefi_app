@@ -9,7 +9,7 @@ import 'modules/token.dart';
 
 class ListViewMarket extends StatefulWidget {
   ListViewMarket({Key? key,required this.asset}) : super(key: key);
-  Object asset;
+  Map<String,dynamic> asset;
   @override
   State<ListViewMarket> createState() => _ListViewMarketState();
 }
@@ -20,13 +20,12 @@ class _ListViewMarketState extends State<ListViewMarket> {
 void initState() {
     // TODO: implement initState
     super.initState();
-    print("Ola");
   }
 
   @override
   Widget build(BuildContext context) {
      //CHECK THE TYPE OF THE ASSET
-    if(widget.asset is Nft){
+    if(widget.asset['type_sell'] == "nft"){
       //CASE NFT
       return Row(
         //MAKE SPACE BETWEEN TWO CONTAINERS
@@ -41,7 +40,7 @@ void initState() {
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                image: DecorationImage(image: AssetImage('assets/bogdanoff.jpg')),
+                image: DecorationImage(image: NetworkImage(widget.asset['url'])),
               ),
             ),
 
@@ -56,7 +55,7 @@ void initState() {
                 fontWeight: FontWeight.bold,
                 fontSize: 16
                 ),),
-                Text('${(widget.asset as Nft).name}',style: TextStyle(
+                Text('${widget.asset['description']}',style: TextStyle(
                   color: Color.fromARGB(255, 231, 233, 237),
                   fontWeight: FontWeight.bold,
                   fontSize: 13
@@ -70,7 +69,7 @@ void initState() {
         //THE SECOUND CONTAINER WHICH WILL DISPLAY THE PRICE OF THE NFT
          Padding(
            padding: const EdgeInsets.all(8.0),
-           child: Text('${(widget.asset as Nft).price} €',style: TextStyle(
+           child: Text('${widget.asset['price']} CHK',style: TextStyle(
                   color: Color.fromARGB(255, 231, 233, 237),
                   fontWeight: FontWeight.bold,
                   fontSize: 13

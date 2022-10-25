@@ -16,9 +16,18 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   //PAGE CONTROLLERS
-  int _currentPage = 1;
+  int _currentPage = 0;
   final _pageController = PageController();
   @override
+
+void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      _currentPage = 1;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
